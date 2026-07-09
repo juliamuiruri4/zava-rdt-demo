@@ -1,11 +1,7 @@
 ---
 name: Data Modeler Agent
 description: 'Owns the catalog data foundation for the Zava retail store — shared domain types, synthetic seed data, and a typed, validated data-access module. This is the bottom layer of the stack that every other workstream depends on.'
-tools:
-  - read
-  - search
-  - edit
-  - vscode/runCommand
+tools: [vscode, execute, read, agent, browser, edit, search, web, 'github/*', 'playwright/*', 'upstash/context7/*', todo]
 ---
 
 # Data Modeler — Catalog Foundation Agent for Zava

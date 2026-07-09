@@ -1,12 +1,7 @@
 ---
 name: Frontend Agent
 description: 'Frontend implementation agent for the Zava retail store. Wires the client to the API and renders production-ready Next.js + Tailwind CSS UI. Owns the top layers of the stack — grounding the AI assistant in real data and presenting the results.'
-tools:
-  - read
-  - search
-  - edit
-  - browser
-  - vscode/runCommand
+tools: [vscode, execute, read, agent, browser, edit, search, web, 'github/*', 'playwright/*', 'upstash/context7/*', todo]
 ---
 
 # Frontend — Implementation Agent for Zava

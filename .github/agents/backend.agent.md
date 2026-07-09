@@ -1,11 +1,7 @@
 ---
 name: Backend Agent
 description: 'Owns server-side API route handlers for the Zava retail store. Builds secure, validated Next.js Route Handlers on top of the catalog data-access module. Sits in the middle of the stack — depends on the data layer, is consumed by the frontend.'
-tools:
-  - read
-  - search
-  - edit
-  - vscode/runCommand
+tools: [vscode, execute, read, agent, browser, edit, search, web, 'github/*', 'playwright/*', 'upstash/context7/*', todo]
 ---
 
 # Backend — API Agent for Zava
