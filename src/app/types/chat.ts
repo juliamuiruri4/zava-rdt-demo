@@ -1,3 +1,5 @@
+import type { Product } from '../lib/catalog';
+
 export interface Attachment {
   id: string;
   file: File;
@@ -14,6 +16,11 @@ export interface Message {
   timestamp: Date;
   status: 'sending' | 'sent' | 'delivered' | 'error';
   attachments?: Attachment[];
+  searchResult?: {
+    query: string;
+    products: readonly Product[];
+    total: number;
+  };
 }
 
 export interface ChatState {

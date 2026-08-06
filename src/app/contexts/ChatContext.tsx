@@ -2,6 +2,10 @@
 
 import React, { createContext, useContext, useReducer, useCallback } from 'react';
 import { Message, ChatState, ChatContextType, Attachment } from '../types/chat';
+import {
+  searchCatalog,
+  type CatalogSearchResult,
+} from '../lib/chat/searchCatalog';
 
 const initialState: ChatState = {
   messages: [],
@@ -57,6 +61,7 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
             : msg
         ),
         error: action.payload.error,
+        isTyping: false,
       };
     case 'RECEIVE_MESSAGE':
       return {
@@ -91,33 +96,33 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     dispatch({ type: 'SEND_MESSAGE_START', payload: { message: userMessage } });
 
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      dispatch({ type: 'SEND_MESSAGE_SUCCESS', payload: { messageId: userMessage.id } });
-      
-      // Simulate AI typing
       dispatch({ type: 'SET_TYPING', payload: { isTyping: true } });
-      
-      // Simulate AI response delay
-      await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
-      
+
+      const searchResult = await searchCatalog(content);
+
+      dispatch({ type: 'SEND_MESSAGE_SUCCESS', payload: { messageId: userMessage.id } });
+
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: generateAIResponse(content),
+        content: createGroundedResponse(searchResult),
         sender: 'ai',
         timestamp: new Date(),
         status: 'delivered',
+        searchResult: {
+          query: searchResult.query,
+          products: searchResult.products,
+          total: searchResult.total,
+        },
       };
 
       dispatch({ type: 'RECEIVE_MESSAGE', payload: { message: aiMessage } });
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('Product search request failed:', error);
       dispatch({
         type: 'SEND_MESSAGE_ERROR',
         payload: {
           messageId: userMessage.id,
-          error: 'Failed to send message. Please try again.',
+          error: 'I could not search the catalog right now. Please try again.',
         },
       });
     }
@@ -168,22 +173,14 @@ export function useChat() {
   return context;
 }
 
-// Mock AI response generator
-function generateAIResponse(userMessage: string): string {
-  const responses = [
-    `I'd be happy to help you with that! What specific information are you looking for?`,
-    `That's a great question! Based on your needs, I recommend checking out our featured products section.`,
-    `I understand you're looking for home improvement solutions. Can you tell me more about your project?`,
-    `Our AI assistants are here to help! Let me find the best options for you.`,
-    `Thank you for your question! I can definitely help you find the right products for your home improvement project.`,
-    `I see you're interested in our services. What type of room or area are you working on?`,
-    `That's an excellent choice! Our store offers high-quality products for all your home improvement needs.`,
-  ];
-  
-  // Add some context-based responses
-  if (userMessage.toLowerCase().includes('image') || userMessage.toLowerCase().includes('picture')) {
-    return `I can see you've shared an image! That's really helpful for understanding your project better. Based on what I can see, I'd recommend exploring our related product categories.`;
+function createGroundedResponse(searchResult: CatalogSearchResult): string {
+  if (searchResult.products.length === 0) {
+    return `I couldn't find any catalog products matching "${searchResult.query}". Try a different product name or category.`;
   }
-  
-  return responses[Math.floor(Math.random() * responses.length)];
+
+  const productNames = searchResult.products
+    .map((product) => product.name)
+    .join(', ');
+
+  return `I found ${searchResult.total} catalog ${searchResult.total === 1 ? 'product' : 'products'} matching "${searchResult.query}": ${productNames}.`;
 }
