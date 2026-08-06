@@ -39,7 +39,7 @@ export const productSchema = z
     price: moneySchema,
     priceUnit: priceUnitSchema,
     image: z.string().regex(/^\/images\/[a-z0-9-]+\.(?:png|jpg|webp)$/),
-    href: z.string().regex(/^\/products\/[a-z0-9-/]+$/),
+    href: z.string().regex(/^\/products\/[a-z0-9/-]+$/),
     tags: z.array(z.string().min(1).max(40)).max(12).readonly(),
     featured: z.boolean(),
     popular: z.boolean(),

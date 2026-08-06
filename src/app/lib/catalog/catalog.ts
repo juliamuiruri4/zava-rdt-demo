@@ -6,7 +6,6 @@ import {
   productSlugSchema,
   type Catalog,
   type Product,
-  type ProductCategory,
 } from './schemas';
 
 const catalog = catalogSchema.parse(seedProducts);
@@ -20,7 +19,7 @@ export function getProductBySlug(slug: string): Product | undefined {
   return catalog.find((product) => product.slug === validatedSlug);
 }
 
-export function getProductsByCategory(category: ProductCategory): Catalog {
+export function getProductsByCategory(category: string): Catalog {
   const validatedCategory = productCategorySchema.parse(category);
   return catalog.filter((product) => product.category === validatedCategory);
 }

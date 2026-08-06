@@ -1,4 +1,4 @@
-export const seedProducts: unknown = [
+export const seedProducts: unknown[] = [
   {
     id: 'prod_oak_hardwood',
     slug: 'oak-solid-hardwood-plank',
