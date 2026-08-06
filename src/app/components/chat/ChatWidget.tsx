@@ -15,10 +15,10 @@ export default function ChatWidget() {
 
   return (
     <div
-      className={`fixed bottom-4 right-4 z-50 transition-all duration-300 ${
+      className={`fixed bottom-2 right-2 z-50 max-w-[calc(100vw-1rem)] transition-all duration-300 sm:bottom-4 sm:right-4 ${
         chatState.isMinimized
-          ? 'w-80 h-14'
-          : 'w-96 h-[600px] max-h-[80vh]'
+          ? 'h-14 w-80'
+          : 'h-[min(600px,calc(100dvh-1rem))] w-96 sm:max-h-[80vh]'
       }`}
     >
       <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 h-full flex flex-col overflow-hidden">

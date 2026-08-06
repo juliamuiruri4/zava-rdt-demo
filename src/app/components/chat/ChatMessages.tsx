@@ -57,29 +57,50 @@ export default function ChatMessages() {
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
             </svg>
           </div>
-          <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 max-w-xs shadow-sm">
-            <div className="flex space-x-1">
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+          <div
+            className="max-w-xs rounded-2xl rounded-tl-sm bg-white px-4 py-3 shadow-sm"
+            role="status"
+            aria-label="Searching the catalog"
+          >
+            <div className="flex space-x-1" aria-hidden="true">
+              <div className="h-2 w-2 animate-pulse rounded-full bg-gray-400"></div>
+              <div className="h-2 w-2 animate-pulse rounded-full bg-gray-400 [animation-delay:150ms]"></div>
+              <div className="h-2 w-2 animate-pulse rounded-full bg-gray-400 [animation-delay:300ms]"></div>
             </div>
           </div>
         </div>
       )}
 
       {chatState.error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm">
-          <div className="flex items-center">
+        <section
+          className="rounded-xl border border-red-200 bg-red-50 p-3 text-red-800"
+          role="alert"
+          aria-live="assertive"
+          aria-labelledby="catalog-search-error"
+        >
+          <div className="flex items-start gap-2">
             <svg
-              className="w-4 h-4 mr-2"
-              fill="currentColor"
+              className="mt-0.5 h-5 w-5 shrink-0"
+              fill="none"
+              stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 4.5h.008v.008H12V16.5Z"
+              />
             </svg>
-            {chatState.error}
+            <div>
+              <h3 id="catalog-search-error" className="text-sm font-semibold">
+                Catalog search failed
+              </h3>
+              <p className="mt-1 text-sm leading-5">{chatState.error}</p>
+            </div>
           </div>
-        </div>
+        </section>
       )}
 
       <div ref={messagesEndRef} />

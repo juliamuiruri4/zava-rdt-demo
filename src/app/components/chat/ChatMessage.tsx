@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Message } from '../../types/chat';
+import ProductCitationCard from './ProductCitationCard';
 
 interface ChatMessageProps {
   message: Message;
@@ -9,6 +10,14 @@ interface ChatMessageProps {
 
 export default function ChatMessage({ message }: ChatMessageProps) {
   const isUser = message.sender === 'user';
+  const hasSearchResults =
+    !isUser &&
+    message.searchResult !== undefined &&
+    message.searchResult.products.length > 0;
+  const hasEmptySearchResult =
+    !isUser &&
+    message.searchResult !== undefined &&
+    message.searchResult.products.length === 0;
   
   const formatTime = (timestamp: Date) => {
     return new Intl.DateTimeFormat('en-US', {
@@ -58,7 +67,11 @@ export default function ChatMessage({ message }: ChatMessageProps) {
         </div>
       )}
 
-      <div className={`flex flex-col max-w-xs ${isUser ? 'items-end' : 'items-start'}`}>
+      <div
+        className={`flex min-w-0 flex-col ${
+          isUser ? 'max-w-xs items-end' : 'w-full max-w-xs items-start'
+        }`}
+      >
         {/* Image attachments */}
         {message.attachments && message.attachments.length > 0 && (
           <div className={`mb-2 ${isUser ? 'flex justify-end' : ''}`}>
@@ -85,7 +98,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
         )}
 
         {/* Text message bubble (only show if there's content) */}
-        {message.content && (
+        {message.content && !hasEmptySearchResult && !hasSearchResults && (
           <div
             className={`rounded-2xl px-4 py-3 shadow-sm ${
               isUser
@@ -95,6 +108,77 @@ export default function ChatMessage({ message }: ChatMessageProps) {
           >
             <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
           </div>
+        )}
+
+        {hasSearchResults && message.searchResult && (
+          <>
+            <div className="rounded-2xl rounded-tl-sm border border-gray-200 bg-white px-4 py-3 text-gray-900 shadow-sm">
+              <p className="break-words text-sm">
+                I found {message.searchResult.total}{' '}
+                {message.searchResult.total === 1 ? 'product' : 'products'} in
+                the catalog for &quot;{message.searchResult.query}&quot;.
+              </p>
+            </div>
+            <section
+              className="mt-2 w-full"
+              aria-label={`Catalog sources for ${message.searchResult.query}`}
+            >
+              <div className="mb-2 flex items-center justify-between gap-2 px-1">
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-teal-800">
+                  Catalog sources
+                </h3>
+                <span className="text-xs text-gray-500">
+                  {message.searchResult.products.length} shown
+                </span>
+              </div>
+              <ol className="space-y-2">
+                {message.searchResult.products.map((product, index) => (
+                  <li key={product.id}>
+                    <ProductCitationCard
+                      product={product}
+                      citationNumber={index + 1}
+                    />
+                  </li>
+                ))}
+              </ol>
+            </section>
+          </>
+        )}
+
+        {hasEmptySearchResult && message.searchResult && (
+          <section
+            className="w-full rounded-xl border border-teal-100 bg-teal-50 p-4 text-teal-950"
+            aria-labelledby={`empty-search-${message.id}`}
+          >
+            <div className="flex items-start gap-3">
+              <svg
+                className="mt-0.5 h-5 w-5 shrink-0 text-teal-700"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
+                />
+              </svg>
+              <div className="min-w-0">
+                <h3
+                  id={`empty-search-${message.id}`}
+                  className="text-sm font-semibold text-gray-900"
+                >
+                  No catalog matches
+                </h3>
+                <p className="mt-1 break-words text-sm leading-5">
+                  Nothing matched &quot;{message.searchResult.query}&quot;. Try a different
+                  product name, category, or fewer search terms.
+                </p>
+              </div>
+            </div>
+          </section>
         )}
         
         <div className={`flex items-center mt-1 space-x-1 text-xs text-gray-500 ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`}>
