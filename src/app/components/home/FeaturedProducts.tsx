@@ -37,12 +37,12 @@ export default function FeaturedProducts() {
         <div className="py-8 bg-gray-50"> 
             <div className="max-w-7xl mx-auto px-6"> 
                 {/* Category Navigation */}
-                <div className="flex justify-center mb-8">
-                    <div className="inline-flex bg-white rounded-full p-1 shadow-sm">
+                <div className="mb-8 -mx-6 overflow-x-auto px-6 scrollbar-hide">
+                    <div className="flex w-max min-w-full justify-start rounded-full bg-white p-1 shadow-sm sm:justify-center">
                         {categories.map(category => (
                             <button 
                                 key={category.id}
-                                className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
+                                className={`shrink-0 whitespace-nowrap rounded-full px-4 py-3 text-sm font-medium transition-all duration-200 sm:px-6 ${
                                     category.active 
                                         ? 'bg-teal-600 text-white shadow-md' 
                                         : 'text-gray-600 hover:text-gray-900'
@@ -55,10 +55,10 @@ export default function FeaturedProducts() {
                 </div>
                 
                 {/* Products Grid */}
-                <div className="flex justify-center">
-                    <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide max-w-fit"> 
+                <div className="-mx-6 overflow-x-auto px-6 pb-4 scrollbar-hide">
+                    <div className="flex w-max gap-4 sm:gap-6">
                         {products.map(product => (
-                            <div key={product.id} className="flex-shrink-0 w-80 group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"> 
+                            <div key={product.id} className="group w-72 shrink-0 overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl sm:w-80">
                                 <Link href={product.link}> 
                                     <div className="relative h-64 overflow-hidden"> 
                                         <Image 
